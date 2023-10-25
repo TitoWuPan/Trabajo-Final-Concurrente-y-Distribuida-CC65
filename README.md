@@ -1,4 +1,4 @@
-# Trabajo Final 
+# Tarea Académica 3 : 2023-2
 Programación Concurrente y Distribuida
 
 ## Integrantes :
