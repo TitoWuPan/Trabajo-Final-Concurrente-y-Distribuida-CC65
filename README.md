@@ -13,7 +13,7 @@ El Ludo modificado es una versión ampliada y adaptada del popular juego de mesa
 ### Implementación de Canales:
 - Cada jugador tiene un canal de comunicación bidireccional con el tablero.
 - Los jugadores enviarán los resultados de los lanzamientos de dados y recibirán instrucciones para mover a sus personajes.
-- 
+  
 ### Lógica del Movimiento:
 - Implementar la lógica para mover los personajes en el laberinto según las reglas del juego.
 - Manejar las interacciones con obstáculos.
