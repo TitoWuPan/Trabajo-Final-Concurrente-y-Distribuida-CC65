@@ -68,7 +68,6 @@ func initGameBoard(filename string) [][]int {
 			fmt.Fscanf(file, "%d", &GameBoard[i][j])
 		}
 	}
-
 	return GameBoard
 }
 
