@@ -107,12 +107,13 @@ func exitCheck(curPos pos) bool {
 	}
 }
 
-func move(players Player, dice int) pos {
+func move(players Player, dice int, dir Direction) Player {
+	players.Direction = int(dir)
 
 	for i := 0; i < dice; i++ {
 		if GameBoard.maze[players.Position.i][players.Position.j] == 2 {
 			fmt.Printf("%s Fall in Tramp.\n", players.Name)
-			break
+			// break
 		}
 		if Direction(players.Direction) == Up {
 			//look left
@@ -151,14 +152,14 @@ func move(players Player, dice int) pos {
 				players.Direction = int(Right)
 			}
 		} else if Direction(players.Direction) == Right {
-			//look right
-			if GameBoard.maze[players.Position.i][players.Position.j+1] != 1 {
-				players.Position = players.Position.move(direction[0].Right)
-				players.Direction = int(Right)
-				//look up
-			} else if GameBoard.maze[players.Position.i-1][players.Position.j] != 1 {
+			//look up
+			if GameBoard.maze[players.Position.i-1][players.Position.j] != 1 {
 				players.Position = players.Position.move(direction[0].Up)
 				players.Direction = int(Up)
+				//look right
+			} else if GameBoard.maze[players.Position.i][players.Position.j+1] != 1 {
+				players.Position = players.Position.move(direction[0].Right)
+				players.Direction = int(Right)
 				//look down
 			} else if GameBoard.maze[players.Position.i+1][players.Position.j] != 1 {
 				players.Position = players.Position.move(direction[0].Down)
@@ -187,13 +188,13 @@ func move(players Player, dice int) pos {
 				players.Direction = int(Up)
 			}
 		}
-		fmt.Printf("%s Moving at (%d, %d)\n", players.Name, players.Position.i, players.Position.j)
+		// fmt.Printf("%s Moving at (%d, %d)\n", players.Name, players.Position.i, players.Position.j)
 		// fmt.Printf("%d\n", Direction(players.Direction))
 		if exitCheck(players.Position) {
-			return players.Position
+			return players
 		}
 	}
-	return players.Position
+	return players
 }
 
 func play(player1, player2, player3, player4 chan Player) {
@@ -213,6 +214,6 @@ func main() {
 		fmt.Println()
 	}
 
-	move(players[0], 100)
+	move(players[0], 100, Up)
 	//fmt.Printf("%s Win (%d, %d)\n", players[0].Name, players[0].Position.i, players[0].Position.j)
 }
