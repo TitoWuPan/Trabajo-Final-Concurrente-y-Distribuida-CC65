@@ -99,121 +99,107 @@ func (p pos) move(r pos) pos {
 	return pos{p.i + r.i, p.j + r.j}
 }
 
-func exitCheck(curPos pos, playerNum int) bool {
+func exitCheck(curPos pos) bool {
 	if curPos.i == GameBoard.rows-2 && curPos.j == GameBoard.columns-2 {
-		players[playerNum].Chess--
-		fmt.Printf("%s Found the Exit (%d, %d), Rest %d Chess to Finish\n", players[playerNum].Name, players[playerNum].Position.i, players[playerNum].Position.j, players[playerNum].Chess)
-		players[playerNum].Position = pos{GameBoard.startRow, GameBoard.startColumn}
 		return true
 	} else {
 		return false
 	}
 }
 
-func Check(curPos pos, playerNum int) {
-	players[playerNum].Position = curPos
-}
-
-func move(players Player, dice int, playerNum int) {
+func move(players Player, dice int) pos {
 
 	for i := 0; i < dice; i++ {
+		if GameBoard.maze[players.Position.i][players.Position.j] == 2 {
+			fmt.Printf("%s Fall in Tramp.\n", players.Name)
+			break
+		}
 		if Direction(players.Direction) == Up {
 			//look left
-			if GameBoard.maze[players.Position.i][players.Position.j-1] == 0 {
+			if GameBoard.maze[players.Position.i][players.Position.j-1] != 1 {
 				players.Position = players.Position.move(direction[0].Left)
 				players.Direction = int(Left)
 				//look up
-			} else if GameBoard.maze[players.Position.i-1][players.Position.j] == 0 {
+			} else if GameBoard.maze[players.Position.i-1][players.Position.j] != 1 {
 				players.Position = players.Position.move(direction[0].Up)
 				players.Direction = int(Up)
 				//look right
-			} else if GameBoard.maze[players.Position.i][players.Position.j+1] == 0 {
+			} else if GameBoard.maze[players.Position.i][players.Position.j+1] != 1 {
 				players.Position = players.Position.move(direction[0].Right)
 				players.Direction = int(Right)
 				//look down
-			} else if GameBoard.maze[players.Position.i+1][players.Position.j] == 0 {
+			} else if GameBoard.maze[players.Position.i+1][players.Position.j] != 1 {
 				players.Position = players.Position.move(direction[0].Down)
 				players.Direction = int(Down)
 			}
 		} else if Direction(players.Direction) == Left {
 			//look down
-			if GameBoard.maze[players.Position.i+1][players.Position.j] == 0 {
+			if GameBoard.maze[players.Position.i+1][players.Position.j] != 1 {
 				players.Position = players.Position.move(direction[0].Down)
 				players.Direction = int(Down)
 				//look left
-			} else if GameBoard.maze[players.Position.i][players.Position.j-1] == 0 {
+			} else if GameBoard.maze[players.Position.i][players.Position.j-1] != 1 {
 				players.Position = players.Position.move(direction[0].Left)
 				players.Direction = int(Left)
 				//look up
-			} else if GameBoard.maze[players.Position.i-1][players.Position.j] == 0 {
+			} else if GameBoard.maze[players.Position.i-1][players.Position.j] != 1 {
 				players.Position = players.Position.move(direction[0].Up)
 				players.Direction = int(Up)
 				//look right
-			} else if GameBoard.maze[players.Position.i][players.Position.j+1] == 0 {
+			} else if GameBoard.maze[players.Position.i][players.Position.j+1] != 1 {
 				players.Position = players.Position.move(direction[0].Right)
 				players.Direction = int(Right)
 			}
 		} else if Direction(players.Direction) == Right {
 			//look right
-			if GameBoard.maze[players.Position.i][players.Position.j+1] == 0 {
+			if GameBoard.maze[players.Position.i][players.Position.j+1] != 1 {
 				players.Position = players.Position.move(direction[0].Right)
 				players.Direction = int(Right)
 				//look up
-			} else if GameBoard.maze[players.Position.i-1][players.Position.j] == 0 {
+			} else if GameBoard.maze[players.Position.i-1][players.Position.j] != 1 {
 				players.Position = players.Position.move(direction[0].Up)
 				players.Direction = int(Up)
 				//look down
-			} else if GameBoard.maze[players.Position.i+1][players.Position.j] == 0 {
+			} else if GameBoard.maze[players.Position.i+1][players.Position.j] != 1 {
 				players.Position = players.Position.move(direction[0].Down)
 				players.Direction = int(Down)
 				// look left
-			} else if GameBoard.maze[players.Position.i][players.Position.j-1] == 0 {
+			} else if GameBoard.maze[players.Position.i][players.Position.j-1] != 1 {
 				players.Position = players.Position.move(direction[0].Left)
 				players.Direction = int(Left)
 			}
 		} else if Direction(players.Direction) == Down {
 			//look right
-			if GameBoard.maze[players.Position.i][players.Position.j+1] == 0 {
+			if GameBoard.maze[players.Position.i][players.Position.j+1] != 1 {
 				players.Position = players.Position.move(direction[0].Right)
 				players.Direction = int(Right)
 				//look down
-			} else if GameBoard.maze[players.Position.i+1][players.Position.j] == 0 {
+			} else if GameBoard.maze[players.Position.i+1][players.Position.j] != 1 {
 				players.Position = players.Position.move(direction[0].Down)
 				players.Direction = int(Down)
 				//look left
-			} else if GameBoard.maze[players.Position.i][players.Position.j-1] == 0 {
+			} else if GameBoard.maze[players.Position.i][players.Position.j-1] != 1 {
 				players.Position = players.Position.move(direction[0].Left)
 				players.Direction = int(Left)
 				//look up
-			} else if GameBoard.maze[players.Position.i-1][players.Position.j] == 0 {
+			} else if GameBoard.maze[players.Position.i-1][players.Position.j] != 1 {
 				players.Position = players.Position.move(direction[0].Up)
 				players.Direction = int(Up)
 			}
 		}
-		// fmt.Printf("%s Moving at (%d, %d)\n", players.Name, players.Position.i, players.Position.j)
+		fmt.Printf("%s Moving at (%d, %d)\n", players.Name, players.Position.i, players.Position.j)
 		// fmt.Printf("%d\n", Direction(players.Direction))
-		// Check(players.Position, playerNum)
-		// if exitCheck(players.Position, playerNum) { break }
+		if exitCheck(players.Position) {
+			return players.Position
+		}
 	}
+	return players.Position
 }
 
 func play(player1, player2, player3, player4 chan Player) {
-	p1 := <-player1
-	p2 := <-player2
-	p3 := <-player3
-	p4 := <-player4
 
 	for {
 
-		player1 <- p1
-		player2 <- p2
-		player3 <- p3
-		player4 <- p4
-
-		close(player1)
-		close(player2)
-		close(player3)
-		close(player4)
 	}
 }
 
@@ -227,6 +213,6 @@ func main() {
 		fmt.Println()
 	}
 
-	move(players[0], 100, 0)
-	fmt.Printf("%s Win (%d, %d)\n", players[0].Name, players[0].Position.i, players[0].Position.j)
+	move(players[0], 100)
+	//fmt.Printf("%s Win (%d, %d)\n", players[0].Name, players[0].Position.i, players[0].Position.j)
 }
