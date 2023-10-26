@@ -10,6 +10,9 @@ import (
 type Direction int
 
 const (
+	// numOfPlayers = 4
+	// numOfSquares = 24
+
 	Up    Direction = 0
 	Down  Direction = 1
 	Left  Direction = 2
@@ -35,9 +38,9 @@ type Player struct {
 	Position pos
 	//Color de la pieza
 	Color string
-
-	Chess int
-	//
+	//Piezas en tablero con las que cuenta el jugador
+	Pieces int
+	//Direccion de movimiento
 	Direction int
 }
 
@@ -50,10 +53,10 @@ type dir struct {
 
 var (
 	players = []Player{
-		{Name: "Player 1", Position: pos{1, 1}, Color: "Red", Chess: 4, Direction: int(Up)},
-		{Name: "Player 2", Position: pos{1, 1}, Color: "Green", Chess: 4, Direction: int(Up)},
-		{Name: "Player 3", Position: pos{1, 1}, Color: "Blue", Chess: 4, Direction: int(Up)},
-		{Name: "Player 4", Position: pos{1, 1}, Color: "Yellow", Chess: 4, Direction: int(Up)},
+		{Name: "Player 1", Position: pos{1, 1}, Color: "Red", Pieces: 4, Direction: int(Up)},
+		{Name: "Player 2", Position: pos{1, 1}, Color: "Green", Pieces: 4, Direction: int(Up)},
+		{Name: "Player 3", Position: pos{1, 1}, Color: "Blue", Pieces: 4, Direction: int(Up)},
+		{Name: "Player 4", Position: pos{1, 1}, Color: "Yellow", Pieces: 4, Direction: int(Up)},
 	}
 	direction = []dir{
 		{Up: pos{-1, 0}, // Arriba
@@ -235,40 +238,40 @@ func play(player1, player2, player3, player4 Player) {
 		p4 = p4_new
 
 		if exitCheck(p1.Position) {
-			p1.Chess--
+			p1.Pieces--
 			p1.Position = pos{GameBoard.startRow, GameBoard.startColumn}
-			fmt.Printf("%s Finish 1 run, Rest (%d) chess. \n", p1.Name, p1.Chess)
-			if p1.Chess == 0 {
+			fmt.Printf("%s Finish 1 run, Rest (%d) Pieces. \n", p1.Name, p1.Pieces)
+			if p1.Pieces == 0 {
 				fmt.Printf("%s Win\n", p1.Name)
 				break
 			}
 		}
 
 		if exitCheck(p2.Position) {
-			p2.Chess--
+			p2.Pieces--
 			p2.Position = pos{GameBoard.startRow, GameBoard.startColumn}
-			fmt.Printf("%s Finish 1 run, Rest (%d) chess. \n", p2.Name, p2.Chess)
-			if p2.Chess == 0 {
+			fmt.Printf("%s Finish 1 run, Rest (%d) Pieces. \n", p2.Name, p2.Pieces)
+			if p2.Pieces == 0 {
 				fmt.Printf("%s Win\n", p2.Name)
 				break
 			}
 		}
 
 		if exitCheck(p3.Position) {
-			p3.Chess--
+			p3.Pieces--
 			p3.Position = pos{GameBoard.startRow, GameBoard.startColumn}
-			fmt.Printf("%s Finish 1 run, Rest (%d) chess. \n", p3.Name, p3.Chess)
-			if p3.Chess == 0 {
+			fmt.Printf("%s Finish 1 run, Rest (%d) Pieces. \n", p3.Name, p3.Pieces)
+			if p3.Pieces == 0 {
 				fmt.Printf("%s Win\n", p3.Name)
 				break
 			}
 		}
 
 		if exitCheck(p4.Position) {
-			p4.Chess--
+			p4.Pieces--
 			p4.Position = pos{GameBoard.startRow, GameBoard.startColumn}
-			fmt.Printf("%s Finish 1 run, Rest (%d) chess. \n", p4.Name, p4.Chess)
-			if p4.Chess == 0 {
+			fmt.Printf("%s Finish 1 run, Rest (%d) Pieces. \n", p4.Name, p4.Pieces)
+			if p4.Pieces == 0 {
 				fmt.Printf("%s Win\n", p4.Name)
 				break
 			}
