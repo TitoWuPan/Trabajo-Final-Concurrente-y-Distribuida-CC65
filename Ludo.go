@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
+	"sync"
 )
 
 type Direction int
@@ -65,14 +66,14 @@ func rollDice() int {
 	var roll_1 int = rand.Intn(6) + 1
 	var roll_2 int = rand.Intn(6) + 1
 	if rand.Intn(2) == 0 {
-		fmt.Printf("You rolled (+): %d\t", roll_1+roll_2)
+		fmt.Printf("You rolled (+): %d\n", roll_1+roll_2)
 		return roll_1 + roll_2
 	} else {
 		if roll_1-roll_2 > 0 {
-			fmt.Printf("You rolled (-): %d\t", roll_1-roll_2)
+			fmt.Printf("You rolled (-): %d\n", roll_1-roll_2)
 			return roll_1 - roll_2
 		} else {
-			fmt.Printf("You rolled (-): %d\t", roll_1-roll_2)
+			fmt.Printf("You rolled (-): %d\n", roll_1-roll_2)
 			return 0
 		}
 	}
@@ -110,11 +111,9 @@ func exitCheck(curPos pos) bool {
 func move(players Player, dice int, dir Direction) Player {
 	players.Direction = int(dir)
 
+	fmt.Printf("%s at (%d, %d) in direction %d\n", players.Name, players.Position.i, players.Position.j, players.Direction)
+
 	for i := 0; i < dice; i++ {
-		if GameBoard.maze[players.Position.i][players.Position.j] == 2 {
-			fmt.Printf("%s Fall in Tramp.\n", players.Name)
-			// break
-		}
 		if Direction(players.Direction) == Up {
 			//look left
 			if GameBoard.maze[players.Position.i][players.Position.j-1] != 1 {
@@ -188,19 +187,89 @@ func move(players Player, dice int, dir Direction) Player {
 				players.Direction = int(Up)
 			}
 		}
-		// fmt.Printf("%s Moving at (%d, %d)\n", players.Name, players.Position.i, players.Position.j)
-		// fmt.Printf("%d\n", Direction(players.Direction))
+
+		if GameBoard.maze[players.Position.i][players.Position.j] == 2 {
+			fmt.Printf("%s Moving at (%d, %d) in direction %d\t", players.Name, players.Position.i, players.Position.j, players.Direction)
+			fmt.Printf("%s Fall in Tramp.\n", players.Name)
+			return players
+		}
+
 		if exitCheck(players.Position) {
+			fmt.Printf("%s Moving at (%d, %d) in direction %d\n", players.Name, players.Position.i, players.Position.j, players.Direction)
 			return players
 		}
 	}
+	fmt.Printf("%s Moving at (%d, %d) in direction %d\n", players.Name, players.Position.i, players.Position.j, players.Direction)
 	return players
 }
 
-func play(player1, player2, player3, player4 chan Player) {
+func play(player1, player2, player3, player4 Player) {
+	var wg sync.WaitGroup
+
+	p1 := player1
+	p2 := player2
+	p3 := player3
+	p4 := player4
 
 	for {
+		wg.Add(4)
 
+		var p1_new Player = move(p1, rollDice(), Direction(p1.Direction))
+		wg.Done()
+
+		var p2_new Player = move(p2, rollDice(), Direction(p2.Direction))
+		wg.Done()
+
+		var p3_new Player = move(p3, rollDice(), Direction(p3.Direction))
+		wg.Done()
+
+		var p4_new Player = move(p4, rollDice(), Direction(p4.Direction))
+		wg.Done()
+
+		p1 = p1_new
+		p2 = p2_new
+		p3 = p3_new
+		p4 = p4_new
+
+		if exitCheck(p1.Position) {
+			p1.Chess--
+			p1.Position = pos{GameBoard.startRow, GameBoard.startColumn}
+			fmt.Printf("%s Finish 1 run, Rest (%d) chess. \n", p1.Name, p1.Chess)
+			if p1.Chess == 0 {
+				fmt.Printf("%s Win\n", p1.Name)
+				break
+			}
+		}
+
+		if exitCheck(p2.Position) {
+			p2.Chess--
+			p2.Position = pos{GameBoard.startRow, GameBoard.startColumn}
+			fmt.Printf("%s Finish 1 run, Rest (%d) chess. \n", p2.Name, p2.Chess)
+			if p2.Chess == 0 {
+				fmt.Printf("%s Win\n", p2.Name)
+				break
+			}
+		}
+
+		if exitCheck(p3.Position) {
+			p3.Chess--
+			p3.Position = pos{GameBoard.startRow, GameBoard.startColumn}
+			fmt.Printf("%s Finish 1 run, Rest (%d) chess. \n", p3.Name, p3.Chess)
+			if p3.Chess == 0 {
+				fmt.Printf("%s Win\n", p3.Name)
+				break
+			}
+		}
+
+		if exitCheck(p4.Position) {
+			p4.Chess--
+			p4.Position = pos{GameBoard.startRow, GameBoard.startColumn}
+			fmt.Printf("%s Finish 1 run, Rest (%d) chess. \n", p4.Name, p4.Chess)
+			if p4.Chess == 0 {
+				fmt.Printf("%s Win\n", p4.Name)
+				break
+			}
+		}
 	}
 }
 
@@ -214,6 +283,5 @@ func main() {
 		fmt.Println()
 	}
 
-	move(players[0], 100, Up)
-	//fmt.Printf("%s Win (%d, %d)\n", players[0].Name, players[0].Position.i, players[0].Position.j)
+	play(players[0], players[1], players[2], players[3])
 }
