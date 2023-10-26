@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
-	"sync"
 )
 
 type Direction int
@@ -29,11 +28,18 @@ var GameBoard struct {
 }
 
 type Player struct {
-	Name      string
-	Position  pos
-	Color     string
-	Chess     int
+	//id del jugador
+	Name string
+	//posicion del jugador en el tablero
+	Position pos
+	//Color de la pieza
+	Color string
+	//Piezas en tablero con las que cuenta el jugador
+	Pieces int
+	//Direccion de movimiento
 	Direction int
+
+	Turno int
 }
 
 type dir struct {
@@ -45,10 +51,10 @@ type dir struct {
 
 var (
 	players = []Player{
-		{Name: "Player 1", Position: pos{1, 1}, Color: "Red", Chess: 4, Direction: int(Up)},
-		{Name: "Player 2", Position: pos{1, 1}, Color: "Green", Chess: 4, Direction: int(Up)},
-		{Name: "Player 3", Position: pos{1, 1}, Color: "Blue", Chess: 4, Direction: int(Up)},
-		{Name: "Player 4", Position: pos{1, 1}, Color: "Yellow", Chess: 4, Direction: int(Up)},
+		{Name: "Player 1", Position: pos{1, 1}, Color: "Red", Pieces: 4, Direction: int(Up), Turno: 0},
+		{Name: "Player 2", Position: pos{1, 1}, Color: "Green", Pieces: 4, Direction: int(Up), Turno: 1},
+		{Name: "Player 3", Position: pos{1, 1}, Color: "Blue", Pieces: 4, Direction: int(Up), Turno: 2},
+		{Name: "Player 4", Position: pos{1, 1}, Color: "Yellow", Pieces: 4, Direction: int(Up), Turno: 3},
 	}
 	direction = []dir{
 		{Up: pos{-1, 0}, // Arriba
@@ -57,12 +63,24 @@ var (
 			Right: pos{0, 1},  // Derecha
 		},
 	}
+
+	playerChannel chan bool
+	BoardChannel  chan bool
+	CheckChaneel  chan bool
+
+	playerChannel1 chan bool
+	playerChannel2 chan bool
+	playerChannel3 chan bool
+	playerChannel4 chan bool
+
+	turno = 0
 )
 
-func rollDice() int {
-	var roll_1 int = rand.Intn(6) + 1
-	var roll_2 int = rand.Intn(6) + 1
-	if rand.Intn(2) == 0 {
+func rollDices() int {
+	roll_1 := rand.Intn(6) + 1
+	roll_2 := rand.Intn(6) + 1
+	roll_3 := rand.Intn(1) + 1
+	if roll_3 == 0 {
 		fmt.Printf("You rolled (+): %d\n", roll_1+roll_2)
 		return roll_1 + roll_2
 	} else {
@@ -105,7 +123,7 @@ func exitCheck(curPos pos) bool {
 	}
 }
 
-func move(players Player, dice int, dir Direction) Player {
+func move(players *Player, dice int, dir Direction) *Player {
 	players.Direction = int(dir)
 
 	fmt.Printf("%s at (%d, %d) in direction %d\n", players.Name, players.Position.i, players.Position.j, players.Direction)
@@ -200,78 +218,100 @@ func move(players Player, dice int, dir Direction) Player {
 	return players
 }
 
-func play(player1, player2, player3, player4 Player) {
+/*
+func play(player1, player2, player3, player4 *Player) {
 	var wg sync.WaitGroup
-
-	p1 := player1
-	p2 := player2
-	p3 := player3
-	p4 := player4
 
 	for {
 		wg.Add(4)
 
-		var p1_new Player = move(p1, rollDice(), Direction(p1.Direction))
+		player1 = move(player1, rollDices(), Direction(player1.Direction))
 		wg.Done()
 
-		var p2_new Player = move(p2, rollDice(), Direction(p2.Direction))
+		player2 = move(player2, rollDices(), Direction(player2.Direction))
 		wg.Done()
 
-		var p3_new Player = move(p3, rollDice(), Direction(p3.Direction))
+		player3 = move(player3, rollDices(), Direction(player3.Direction))
 		wg.Done()
 
-		var p4_new Player = move(p4, rollDice(), Direction(p4.Direction))
+		player4 = move(player4, rollDices(), Direction(player4.Direction))
 		wg.Done()
 
-		p1 = p1_new
-		p2 = p2_new
-		p3 = p3_new
-		p4 = p4_new
-
-		if exitCheck(p1.Position) {
-			p1.Chess--
-			p1.Position = pos{GameBoard.startRow, GameBoard.startColumn}
-			fmt.Printf("%s Finish 1 run, Rest (%d) chess. \n", p1.Name, p1.Chess)
-			if p1.Chess == 0 {
-				fmt.Printf("%s Win\n", p1.Name)
+		if exitCheck(player1.Position) {
+			player1.Pieces--
+			player1.Position = pos{GameBoard.startRow, GameBoard.startColumn}
+			fmt.Printf("%s Finish 1 run, Rest (%d) Pieces. \n", player1.Name, player1.Pieces)
+			if player1.Pieces == 0 {
+				fmt.Printf("%s Win\n", player1.Name)
 				break
 			}
 		}
 
-		if exitCheck(p2.Position) {
-			p2.Chess--
-			p2.Position = pos{GameBoard.startRow, GameBoard.startColumn}
-			fmt.Printf("%s Finish 1 run, Rest (%d) chess. \n", p2.Name, p2.Chess)
-			if p2.Chess == 0 {
-				fmt.Printf("%s Win\n", p2.Name)
+		if exitCheck(player2.Position) {
+			player2.Pieces--
+			player2.Position = pos{GameBoard.startRow, GameBoard.startColumn}
+			fmt.Printf("%s Finish 1 run, Rest (%d) Pieces. \n", player2.Name, player2.Pieces)
+			if player2.Pieces == 0 {
+				fmt.Printf("%s Win\n", player2.Name)
 				break
 			}
 		}
 
-		if exitCheck(p3.Position) {
-			p3.Chess--
-			p3.Position = pos{GameBoard.startRow, GameBoard.startColumn}
-			fmt.Printf("%s Finish 1 run, Rest (%d) chess. \n", p3.Name, p3.Chess)
-			if p3.Chess == 0 {
-				fmt.Printf("%s Win\n", p3.Name)
+		if exitCheck(player3.Position) {
+			player3.Pieces--
+			player3.Position = pos{GameBoard.startRow, GameBoard.startColumn}
+			fmt.Printf("%s Finish 1 run, Rest (%d) Pieces. \n", player3.Name, player3.Pieces)
+			if player3.Pieces == 0 {
+				fmt.Printf("%s Win\n", player3.Name)
 				break
 			}
 		}
 
-		if exitCheck(p4.Position) {
-			p4.Chess--
-			p4.Position = pos{GameBoard.startRow, GameBoard.startColumn}
-			fmt.Printf("%s Finish 1 run, Rest (%d) chess. \n", p4.Name, p4.Chess)
-			if p4.Chess == 0 {
-				fmt.Printf("%s Win\n", p4.Name)
+		if exitCheck(player4.Position) {
+			player4.Pieces--
+			player4.Position = pos{GameBoard.startRow, GameBoard.startColumn}
+			fmt.Printf("%s Finish 1 run, Rest (%d) Pieces. \n", player4.Name, player4.Pieces)
+			if player4.Pieces == 0 {
+				fmt.Printf("%s Win\n", player4.Name)
 				break
 			}
 		}
 	}
 }
+*/
+
+func play(player *Player) {
+
+	for {
+		playerChannel <- true
+		if turno != player.Turno {
+			<-playerChannel
+			continue
+		}
+
+		turno = (turno + 1) % 4
+		player = move(player, rollDices(), Direction(player.Direction))
+
+		if exitCheck(player.Position) {
+			player.Pieces--
+			player.Position = pos{GameBoard.startRow, GameBoard.startColumn}
+			fmt.Printf("%s Finish 1 run, Rest (%d) Pieces. \n", player.Name, player.Pieces)
+			if player.Pieces == 0 {
+				fmt.Printf("%s Win\n", player.Name)
+				<-CheckChaneel
+				break
+			}
+		}
+		<-playerChannel
+	}
+}
 
 func main() {
 	initGameBoard("GameBoard.in")
+	playerChannel = make(chan bool, 1)
+
+	CheckChaneel = make(chan bool, 1)
+	CheckChaneel <- true
 
 	for i := range GameBoard.maze {
 		for j := range GameBoard.maze[i] {
@@ -280,5 +320,10 @@ func main() {
 		fmt.Println()
 	}
 
-	play(players[0], players[1], players[2], players[3])
+	go play(&players[0])
+	go play(&players[1])
+	go play(&players[2])
+	go play(&players[3])
+
+	CheckChaneel <- true
 }
