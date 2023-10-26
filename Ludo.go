@@ -10,9 +10,6 @@ import (
 type Direction int
 
 const (
-	numOfPlayers = 4
-	numOfSquares = 24
-
 	Up    Direction = 0
 	Down  Direction = 1
 	Left  Direction = 2
