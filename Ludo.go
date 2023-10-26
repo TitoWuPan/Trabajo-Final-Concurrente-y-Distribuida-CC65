@@ -65,13 +65,7 @@ var (
 	}
 
 	playerChannel chan bool
-	BoardChannel  chan bool
 	CheckChaneel  chan bool
-
-	playerChannel1 chan bool
-	playerChannel2 chan bool
-	playerChannel3 chan bool
-	playerChannel4 chan bool
 
 	turno = 0
 )
@@ -217,68 +211,6 @@ func move(players *Player, dice int, dir Direction) *Player {
 	fmt.Printf("%s Moving at (%d, %d) in direction %d\n", players.Name, players.Position.i, players.Position.j, players.Direction)
 	return players
 }
-
-/*
-func play(player1, player2, player3, player4 *Player) {
-	var wg sync.WaitGroup
-
-	for {
-		wg.Add(4)
-
-		player1 = move(player1, rollDices(), Direction(player1.Direction))
-		wg.Done()
-
-		player2 = move(player2, rollDices(), Direction(player2.Direction))
-		wg.Done()
-
-		player3 = move(player3, rollDices(), Direction(player3.Direction))
-		wg.Done()
-
-		player4 = move(player4, rollDices(), Direction(player4.Direction))
-		wg.Done()
-
-		if exitCheck(player1.Position) {
-			player1.Pieces--
-			player1.Position = pos{GameBoard.startRow, GameBoard.startColumn}
-			fmt.Printf("%s Finish 1 run, Rest (%d) Pieces. \n", player1.Name, player1.Pieces)
-			if player1.Pieces == 0 {
-				fmt.Printf("%s Win\n", player1.Name)
-				break
-			}
-		}
-
-		if exitCheck(player2.Position) {
-			player2.Pieces--
-			player2.Position = pos{GameBoard.startRow, GameBoard.startColumn}
-			fmt.Printf("%s Finish 1 run, Rest (%d) Pieces. \n", player2.Name, player2.Pieces)
-			if player2.Pieces == 0 {
-				fmt.Printf("%s Win\n", player2.Name)
-				break
-			}
-		}
-
-		if exitCheck(player3.Position) {
-			player3.Pieces--
-			player3.Position = pos{GameBoard.startRow, GameBoard.startColumn}
-			fmt.Printf("%s Finish 1 run, Rest (%d) Pieces. \n", player3.Name, player3.Pieces)
-			if player3.Pieces == 0 {
-				fmt.Printf("%s Win\n", player3.Name)
-				break
-			}
-		}
-
-		if exitCheck(player4.Position) {
-			player4.Pieces--
-			player4.Position = pos{GameBoard.startRow, GameBoard.startColumn}
-			fmt.Printf("%s Finish 1 run, Rest (%d) Pieces. \n", player4.Name, player4.Pieces)
-			if player4.Pieces == 0 {
-				fmt.Printf("%s Win\n", player4.Name)
-				break
-			}
-		}
-	}
-}
-*/
 
 func play(player *Player) {
 
