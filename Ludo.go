@@ -31,10 +31,15 @@ var GameBoard struct {
 }
 
 type Player struct {
-	Name      string
-	Position  pos
-	Color     string
-	Chess     int
+	//id del jugador
+	Name string
+	//posicion del jugador en el tablero
+	Position pos
+	//Color de la pieza
+	Color string
+
+	Chess int
+	//
 	Direction int
 }
 
@@ -61,9 +66,10 @@ var (
 	}
 )
 
+// agregar concurrencia goroutine independinete de tirar dado y que est sea el agrupador
 func rollDice() int {
-	var roll_1 int = rand.Intn(6) + 1
-	var roll_2 int = rand.Intn(6) + 1
+	var roll_1 int = rand.Intn(6) + 1 //roll_1= go roll_dice()
+	var roll_2 int = rand.Intn(6) + 1 //roll_2=go roll_dice()
 	if rand.Intn(2) == 0 {
 		fmt.Printf("You rolled (+): %d\t", roll_1+roll_2)
 		return roll_1 + roll_2
