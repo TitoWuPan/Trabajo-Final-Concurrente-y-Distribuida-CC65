@@ -67,10 +67,18 @@ var (
 	}
 )
 
-// agregar concurrencia goroutine independinete de tirar dado y que est sea el agrupador
-func rollDice() int {
-	var roll_1 int = rand.Intn(6) + 1 //roll_1= go roll_dice()
-	var roll_2 int = rand.Intn(6) + 1 //roll_2=go roll_dice()
+// n: numero maximo del dado |
+// rueda 1 solo dado, permite implementar concurrencia en funciones posteriores
+func rollDice(n int, d chan int) {
+	d <- (rand.Intn(n) + 1)
+}
+func rollDices() int {
+	d1 := make(chan int)
+	d2 := make(chan int)
+	go rollDice(6, d1)
+	go rollDice(6, d2)
+	roll_1 := <-d1
+	roll_2 := <-d2
 	if rand.Intn(2) == 0 {
 		fmt.Printf("You rolled (+): %d\n", roll_1+roll_2)
 		return roll_1 + roll_2
@@ -220,16 +228,16 @@ func play(player1, player2, player3, player4 Player) {
 	for {
 		wg.Add(4)
 
-		var p1_new Player = move(p1, rollDice(), Direction(p1.Direction))
+		var p1_new Player = move(p1, rollDices(), Direction(p1.Direction))
 		wg.Done()
 
-		var p2_new Player = move(p2, rollDice(), Direction(p2.Direction))
+		var p2_new Player = move(p2, rollDices(), Direction(p2.Direction))
 		wg.Done()
 
-		var p3_new Player = move(p3, rollDice(), Direction(p3.Direction))
+		var p3_new Player = move(p3, rollDices(), Direction(p3.Direction))
 		wg.Done()
 
-		var p4_new Player = move(p4, rollDice(), Direction(p4.Direction))
+		var p4_new Player = move(p4, rollDices(), Direction(p4.Direction))
 		wg.Done()
 
 		p1 = p1_new
