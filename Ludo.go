@@ -65,7 +65,7 @@ var (
 	}
 
 	playerChannel chan bool
-	CheckChaneel  chan bool
+	GameChaneel   chan bool
 
 	turno = 0
 )
@@ -75,14 +75,14 @@ func rollDices() int {
 	roll_2 := rand.Intn(6) + 1
 	roll_3 := rand.Intn(1) + 1
 	if roll_3 == 0 {
-		fmt.Printf("You rolled (+): %d\n", roll_1+roll_2)
+		fmt.Printf("rolled (+): %d\n", roll_1+roll_2)
 		return roll_1 + roll_2
 	} else {
 		if roll_1-roll_2 > 0 {
-			fmt.Printf("You rolled (-): %d\n", roll_1-roll_2)
+			fmt.Printf("rolled (-): %d\n", roll_1-roll_2)
 			return roll_1 - roll_2
 		} else {
-			fmt.Printf("You rolled (-): %d\n", roll_1-roll_2)
+			fmt.Printf("rolled (-): %d\n", roll_1-roll_2)
 			return 0
 		}
 	}
@@ -222,6 +222,8 @@ func play(player *Player) {
 		}
 
 		turno = (turno + 1) % 4
+
+		fmt.Printf("%s ", player.Name)
 		player = move(player, rollDices(), Direction(player.Direction))
 
 		if exitCheck(player.Position) {
@@ -230,7 +232,7 @@ func play(player *Player) {
 			fmt.Printf("%s Finish 1 run, Rest (%d) Pieces. \n", player.Name, player.Pieces)
 			if player.Pieces == 0 {
 				fmt.Printf("%s Win\n", player.Name)
-				<-CheckChaneel
+				<-GameChaneel
 				break
 			}
 		}
@@ -241,9 +243,7 @@ func play(player *Player) {
 func main() {
 	initGameBoard("GameBoard.in")
 	playerChannel = make(chan bool, 1)
-
-	CheckChaneel = make(chan bool, 1)
-	CheckChaneel <- true
+	GameChaneel = make(chan bool, 1)
 
 	for i := range GameBoard.maze {
 		for j := range GameBoard.maze[i] {
@@ -252,10 +252,12 @@ func main() {
 		fmt.Println()
 	}
 
+	GameChaneel <- true
+
 	go play(&players[0])
 	go play(&players[1])
 	go play(&players[2])
 	go play(&players[3])
 
-	CheckChaneel <- true
+	GameChaneel <- true
 }
