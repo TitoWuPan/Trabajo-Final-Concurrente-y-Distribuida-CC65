@@ -73,7 +73,7 @@ var (
 func rollDices() int {
 	roll_1 := rand.Intn(6) + 1
 	roll_2 := rand.Intn(6) + 1
-	roll_3 := rand.Intn(1) + 1
+	roll_3 := rand.Intn(2)
 	if roll_3 == 0 {
 		fmt.Printf("rolled (+): %d\n", roll_1+roll_2)
 		return roll_1 + roll_2
