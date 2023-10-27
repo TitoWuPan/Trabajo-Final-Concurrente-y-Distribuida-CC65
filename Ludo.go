@@ -9,10 +9,11 @@ import (
 type Direction int
 
 const (
-	Up    Direction = 0
-	Down  Direction = 1
-	Left  Direction = 2
-	Right Direction = 3
+	PlayerNum           = 1000
+	Up        Direction = 0
+	Down      Direction = 1
+	Left      Direction = 2
+	Right     Direction = 3
 )
 
 type pos struct {
@@ -28,18 +29,11 @@ var GameBoard struct {
 }
 
 type Player struct {
-	//id del jugador
-	Name string
-	//posicion del jugador en el tablero
-	Position pos
-	//Color de la pieza
-	Color string
-	//Piezas en tablero con las que cuenta el jugador
-	Pieces int
-	//Direccion de movimiento
+	Name      string
+	Position  pos
+	Pieces    int
 	Direction int
-
-	Turno int
+	Turno     int
 }
 
 type dir struct {
@@ -50,12 +44,6 @@ type dir struct {
 }
 
 var (
-	players = []Player{
-		{Name: "Player 1", Position: pos{1, 1}, Color: "Red", Pieces: 4, Direction: int(Up), Turno: 0},
-		{Name: "Player 2", Position: pos{1, 1}, Color: "Green", Pieces: 4, Direction: int(Up), Turno: 1},
-		{Name: "Player 3", Position: pos{1, 1}, Color: "Blue", Pieces: 4, Direction: int(Up), Turno: 2},
-		{Name: "Player 4", Position: pos{1, 1}, Color: "Yellow", Pieces: 4, Direction: int(Up), Turno: 3},
-	}
 	direction = []dir{
 		{Up: pos{-1, 0}, // Arriba
 			Down:  pos{1, 0},  // Abajo
@@ -118,8 +106,8 @@ func exitCheck(curPos pos) bool {
 }
 
 func move(players *Player, dice int, dir Direction) *Player {
-	players.Direction = int(dir)
 
+	players.Direction = int(dir)
 	fmt.Printf("%s at (%d, %d) in direction %d\n", players.Name, players.Position.i, players.Position.j, players.Direction)
 
 	for i := 0; i < dice; i++ {
@@ -221,7 +209,7 @@ func play(player *Player) {
 			continue
 		}
 
-		turno = (turno + 1) % 4
+		turno = (turno + 1) % PlayerNum
 
 		fmt.Printf("%s ", player.Name)
 		player = move(player, rollDices(), Direction(player.Direction))
@@ -229,7 +217,7 @@ func play(player *Player) {
 		if exitCheck(player.Position) {
 			player.Pieces--
 			player.Position = pos{GameBoard.startRow, GameBoard.startColumn}
-			fmt.Printf("%s Finish 1 run, Rest (%d) Pieces. \n", player.Name, player.Pieces)
+			fmt.Printf("--------- %s Finish 1 run, Rest (%d) Pieces. ---------\n", player.Name, player.Pieces)
 			if player.Pieces == 0 {
 				fmt.Printf("%s Win\n", player.Name)
 				<-GameChaneel
@@ -252,12 +240,19 @@ func main() {
 		fmt.Println()
 	}
 
+	var players []Player
+
+	for i := 0; i < PlayerNum; i++ {
+		player := Player{Name: fmt.Sprintf("Jugador %d", i+1), Position: pos{1, 1}, Pieces: 4, Direction: int(Up), Turno: i}
+		players = append(players, player)
+	}
+
 	GameChaneel <- true
 
-	go play(&players[0])
-	go play(&players[1])
-	go play(&players[2])
-	go play(&players[3])
+	for i := 0; i < PlayerNum; i++ {
+		go play(&players[i])
+	}
 
 	GameChaneel <- true
 }
+
