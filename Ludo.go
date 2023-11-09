@@ -3,13 +3,15 @@ package main
 import (
 	"fmt"
 	"math/rand"
+	"net"
 	"os"
+	"sync"
 )
 
 type Direction int
 
 const (
-	PlayerNum           = 1000
+	PlayerNum           = 4
 	Up        Direction = 0
 	Down      Direction = 1
 	Left      Direction = 2
@@ -44,24 +46,22 @@ type dir struct {
 }
 
 var (
-	direction = []dir{
-		{Up: pos{-1, 0}, // Arriba
-			Down:  pos{1, 0},  // Abajo
-			Left:  pos{0, -1}, // Izquierda
-			Right: pos{0, 1},  // Derecha
-		},
-	}
+	direction = []dir{{Up: pos{-1, 0}, Down: pos{1, 0}, Left: pos{0, -1}, Right: pos{0, 1}}}
 
-	playerChannel chan bool
-	GameChaneel   chan bool
+	mu sync.Mutex
+	// PlayerChannel chan bool
+	GameChaneel chan bool
 
 	turno = 0
 )
 
 func rollDices() int {
+	mu.Lock()
 	roll_1 := rand.Intn(6) + 1
 	roll_2 := rand.Intn(6) + 1
 	roll_3 := rand.Intn(2)
+	mu.Unlock()
+
 	if roll_3 == 0 {
 		fmt.Printf("rolled (+): %d\n", roll_1+roll_2)
 		return roll_1 + roll_2
@@ -106,7 +106,6 @@ func exitCheck(curPos pos) bool {
 }
 
 func move(players *Player, dice int, dir Direction) *Player {
-
 	players.Direction = int(dir)
 	fmt.Printf("%s at (%d, %d) in direction %d\n", players.Name, players.Position.i, players.Position.j, players.Direction)
 
@@ -186,8 +185,7 @@ func move(players *Player, dice int, dir Direction) *Player {
 		}
 
 		if GameBoard.maze[players.Position.i][players.Position.j] == 2 {
-			fmt.Printf("%s Moving at (%d, %d) in direction %d\t", players.Name, players.Position.i, players.Position.j, players.Direction)
-			fmt.Printf("%s Fall in Tramp.\n", players.Name)
+			fmt.Printf("%s Moving at (%d, %d) in direction %d\t ->   %s Fall in Tramp.\n", players.Name, players.Position.i, players.Position.j, players.Direction, players.Name)
 			return players
 		}
 
@@ -200,16 +198,19 @@ func move(players *Player, dice int, dir Direction) *Player {
 	return players
 }
 
-func play(player *Player) {
+func play(player *Player, channel chan bool) {
 
 	for {
-		playerChannel <- true
+		channel <- true
 		if turno != player.Turno {
-			<-playerChannel
+			// fmt.Printf("%s isn't your turn. Now: %d, Your turn is in %d \n", player.Name, turno, player.Turno)
+			<-channel
 			continue
 		}
 
+		mu.Lock()
 		turno = (turno + 1) % PlayerNum
+		mu.Unlock()
 
 		fmt.Printf("%s ", player.Name)
 		player = move(player, rollDices(), Direction(player.Direction))
@@ -217,21 +218,36 @@ func play(player *Player) {
 		if exitCheck(player.Position) {
 			player.Pieces--
 			player.Position = pos{GameBoard.startRow, GameBoard.startColumn}
-			fmt.Printf("--------- %s Finish 1 run, Rest (%d) Pieces. ---------\n", player.Name, player.Pieces)
+			player.Direction = int(Up)
+			fmt.Printf("--------- %s Finish 1 run, Rest %d Pieces. ---------\n", player.Name, player.Pieces)
 			if player.Pieces == 0 {
-				fmt.Printf("%s Win\n", player.Name)
+				fmt.Printf("||| --- %s Win --- |||\n", player.Name)
 				<-GameChaneel
 				break
 			}
 		}
-		<-playerChannel
+		<-channel
 	}
+}
+
+var Playerhost string
+
+func Set_Players(direction int, players []*Player) {
+	Playerhost = fmt.Sprintf("localhost:%d", direction)
+	con, _ := net.Dial("tcp", Playerhost)
+	defer con.Close()
+
+	fmt.Fprintln(con, players)
 }
 
 func main() {
 	initGameBoard("GameBoard.in")
-	playerChannel = make(chan bool, 1)
+	// PlayerChannel = make(chan bool, 1)
 	GameChaneel = make(chan bool, 1)
+
+	var players []Player
+	var PlayerslList []chan bool
+	var HostlList []int
 
 	for i := range GameBoard.maze {
 		for j := range GameBoard.maze[i] {
@@ -240,19 +256,22 @@ func main() {
 		fmt.Println()
 	}
 
-	var players []Player
-
 	for i := 0; i < PlayerNum; i++ {
-		player := Player{Name: fmt.Sprintf("Jugador %d", i+1), Position: pos{1, 1}, Pieces: 4, Direction: int(Up), Turno: i}
+		player := Player{Name: fmt.Sprintf("Player %d", i+1), Position: pos{1, 1}, Pieces: 4, Direction: int(Up), Turno: i}
 		players = append(players, player)
+		PlayerslList = append(PlayerslList, make(chan bool, 1))
+		HostlList = append(HostlList, 8000+i)
 	}
+
+	// fmt.Println(HostlList)
 
 	GameChaneel <- true
 
 	for i := 0; i < PlayerNum; i++ {
-		go play(&players[i])
+		go play(&players[i], PlayerslList[i])
 	}
 
 	GameChaneel <- true
 }
+
 
