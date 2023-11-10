@@ -18,7 +18,7 @@ var remotehost string
 var playern int = 0
 
 const (
-	PlayerNum           = 4
+	PlayerNum           = 10
 	Up        Direction = 0
 	Down      Direction = 1
 	Left      Direction = 2
@@ -56,10 +56,6 @@ var (
 	direction = []dir{{Up: pos{-1, 0}, Down: pos{1, 0}, Left: pos{0, -1}, Right: pos{0, 1}}}
 	players   []*Player
 	mu        sync.Mutex
-	// PlayerChannel chan bool
-	GameChaneel chan bool
-
-	turno = 0
 )
 
 func rollDices() int {
@@ -70,14 +66,11 @@ func rollDices() int {
 	mu.Unlock()
 
 	if roll_3 == 0 {
-		fmt.Printf("rolled (+): %d\n", roll_1+roll_2)
 		return roll_1 + roll_2
 	} else {
 		if roll_1-roll_2 > 0 {
-			fmt.Printf("rolled (-): %d\n", roll_1-roll_2)
 			return roll_1 - roll_2
 		} else {
-			fmt.Printf("rolled (-): %d\n", roll_1-roll_2)
 			return 0
 		}
 	}
@@ -114,7 +107,7 @@ func exitCheck(curPos pos) bool {
 
 func move(players *Player, dice int, dir Direction) *Player {
 	players.Direction = int(dir)
-	fmt.Printf("%s at (%d, %d) in direction %d\n", players.Name, players.Position.i, players.Position.j, players.Direction)
+	fmt.Printf("%s at (%d, %d)\n", players.Name, players.Position.i, players.Position.j)
 
 	for i := 0; i < dice; i++ {
 		if Direction(players.Direction) == Up {
@@ -192,16 +185,16 @@ func move(players *Player, dice int, dir Direction) *Player {
 		}
 
 		if GameBoard.maze[players.Position.i][players.Position.j] == 2 {
-			fmt.Printf("%s Moving at (%d, %d) in direction %d\t ->   %s Fall in Tramp.\n", players.Name, players.Position.i, players.Position.j, players.Direction, players.Name)
+			fmt.Printf("%s Moving at (%d, %d)\t ->   %s Fall in Tramp.\n", players.Name, players.Position.i, players.Position.j, players.Name)
 			return players
 		}
 
 		if exitCheck(players.Position) {
-			fmt.Printf("%s Moving at (%d, %d) in direction %d\n", players.Name, players.Position.i, players.Position.j, players.Direction)
+			fmt.Printf("%s Moving at (%d, %d)\n", players.Name, players.Position.i, players.Position.j)
 			return players
 		}
 	}
-	fmt.Printf("%s Moving at (%d, %d) in direction %d\n", players.Name, players.Position.i, players.Position.j, players.Direction)
+	fmt.Printf("%s Moving at (%d, %d)\n", players.Name, players.Position.i, players.Position.j)
 	return players
 }
 
@@ -224,7 +217,7 @@ func handle(conn net.Conn) {
 
 	json.Unmarshal([]byte(str), players)
 
-	fmt.Printf("Nos ha llegado el %s\n", players[playern].Name)
+	// fmt.Printf("Get %s\n", players[playern].Name)
 	var player = move(players[playern], rollDices(), Direction(players[playern].Direction))
 
 	if exitCheck(player.Position) {
