@@ -87,4 +87,21 @@ Programación Concurrente y Distribuida
 	}
   }
   ```
-  - 
+  - Por último, para validar el tercer objetivo, se desarrolló la funcionalidad del juego de la siguiente manera:
+ 
+    Primero debemos validar en diferentes terminales el número de jugador ```Player n```, el puerto de cada jugador ```Enter port``` y por último el destino al cual deben ir ```Enter destiny```
+    
+    ![image](https://github.com/TitoWuPan/Trabajo-Final-Concurrente-y-Distribuida-CC65/assets/103372071/929d4515-6d08-409d-ae03-07d810764a31)
+    
+    Inicializamos el juego poniendo el punto de destino ```Enter destiny```
+    
+    ![image](https://github.com/TitoWuPan/Trabajo-Final-Concurrente-y-Distribuida-CC65/assets/103372071/5744647d-2763-45ca-8e4a-20b2c2fd68ad)
+    
+    Una vez inicializado los terminales de los jugadores nos mostrarán como fue su recorrido y cual es el ganador (en este caso el Player 2)
+    
+    ![image](https://github.com/TitoWuPan/Trabajo-Final-Concurrente-y-Distribuida-CC65/assets/103372071/9131a4a4-bb91-4acc-abc3-d94dbfca1d80)
+
+
+    
+
+
