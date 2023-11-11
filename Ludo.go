@@ -83,12 +83,14 @@ func initGameBoard(filename string) {
 	}
 
 	fmt.Fscanf(file, "%d %d %d %d", &GameBoard.rows, &GameBoard.columns, &GameBoard.startRow, &GameBoard.startColumn)
-
 	GameBoard.maze = make([][]int, GameBoard.rows)
+
+	reader := bufio.NewReader(file)
 	for i := 0; i < GameBoard.rows; i++ {
 		GameBoard.maze[i] = make([]int, GameBoard.columns)
+		fmt.Fscanf(reader, "%d")
 		for j := 0; j < GameBoard.columns; j++ {
-			fmt.Fscanf(file, "%d", &GameBoard.maze[i][j])
+			fmt.Fscanf(reader, "%d", &GameBoard.maze[i][j])
 		}
 	}
 }
