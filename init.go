@@ -10,12 +10,10 @@ import (
 )
 
 type Direction int
-
 var remotehost string
-var playern int = 0
 
 const (
-	PlayerNum           = 4
+	PlayerNum           = 10
 	Up        Direction = 0
 	Down      Direction = 1
 	Left      Direction = 2
@@ -49,7 +47,7 @@ func Set_Players(players []Player) {
 func main() {
 	for i := 0; i < PlayerNum; i++ {
 		player := Player{Name: fmt.Sprintf("Player %d", i+1), Position: pos{1, 1}, Pieces: 4, Direction: int(Up), Turno: i}
-		players = append(players, player)
+		players = append(players, &player)
 	}
 
 	br := bufio.NewReader(os.Stdin)
