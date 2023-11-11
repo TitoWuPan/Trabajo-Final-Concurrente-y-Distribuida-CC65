@@ -11,7 +11,7 @@ Programación Concurrente y Distribuida
 - La simulación debe correr concurrentemente usando algoritmo distribuido y manejar un grupo grande de jugadores como host donde la comunicación es a través de puertos y sincronización usando canales.
 - La simulación debe mostrar el progreso del juego en tiempo real. 
 
-## TITULO
+## Desarrollo
 - Para poder dar solución al primer objetivo se creó la función ```Set_Players()``` y la función ```handle()```
 
   La función ```Set_Players()``` toma un arreglo de punteros a Player, lo convierte a formato JSON y luego envía ese JSON a través de una conexión TCP al destino especificado por Destinyhost.
