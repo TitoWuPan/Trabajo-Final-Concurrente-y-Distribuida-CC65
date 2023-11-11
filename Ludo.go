@@ -217,7 +217,7 @@ func handle(conn net.Conn) {
 	br := bufio.NewReader(conn)
 	str, _ := br.ReadString('\n')
 
-	json.Unmarshal([]byte(str), players)
+	json.Unmarshal([]byte(str), &players)
 
 	// fmt.Printf("Get %s\n", players[playern].Name)
 	var player = move(players[playern], rollDices(), Direction(players[playern].Direction))
