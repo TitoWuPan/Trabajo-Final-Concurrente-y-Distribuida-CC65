@@ -101,10 +101,10 @@ Programación Concurrente y Distribuida
     
   ![image](https://github.com/TitoWuPan/Trabajo-Final-Concurrente-y-Distribuida-CC65/assets/103372071/9131a4a4-bb91-4acc-abc3-d94dbfca1d80)
 
-- Conclusiones
+## Conclusiones
 	
-	- El juego funciona como una aplicación distribuida donde cada jugador se comunica con otros jugadores a través de conexiones TCP, comparte su estado y coordina sus acciones para simular un juego de laberinto concurrente. La arquitectura se basa en goroutines y conexiones TCP para permitir la ejecución paralela de múltiples instancias del juego.
+- El juego funciona como una aplicación distribuida donde cada jugador se comunica con otros jugadores a través de conexiones TCP, comparte su estado y coordina sus acciones para simular un juego de laberinto concurrente. La arquitectura se basa en goroutines y conexiones TCP para permitir la ejecución paralela de múltiples instancias del juego.
       
-	- Para el desarrolllo de esta solución usamos la arquitectura Hot Potato, el cual se basa en que cada jugador en la red "lanza" la tarea o los datos al siguiente jugador, de manera similar a cómo se pasaría una patata caliente en un juego. En nuestro caso hacemos que se inicie con nuestro primer jugador, el cual lanza los dados y toma su ueva posición y esta información se entrega al siguiente jugador y así siguen el ciclo hasta que llegue uno a ganar y se detenga el ciclo.
+- Para el desarrolllo de esta solución usamos la arquitectura Hot Potato, el cual se basa en que cada jugador en la red "lanza" la tarea o los datos al siguiente jugador, de manera similar a cómo se pasaría una patata caliente en un juego. En nuestro caso hacemos que se inicie con nuestro primer jugador, el cual lanza los dados y toma su ueva posición y esta información se entrega al siguiente jugador y así siguen el ciclo hasta que llegue uno a ganar y se detenga el ciclo.
 
 
