@@ -47,7 +47,7 @@ func Set_Players(players []Player) {
 func main() {
 	for i := 0; i < PlayerNum; i++ {
 		player := Player{Name: fmt.Sprintf("Player %d", i+1), Position: pos{1, 1}, Pieces: 4, Direction: int(Up), Turno: i}
-		players = append(players, &player)
+		players = append(players, player)
 	}
 
 	br := bufio.NewReader(os.Stdin)
