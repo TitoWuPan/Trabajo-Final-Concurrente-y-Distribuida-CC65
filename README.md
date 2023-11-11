@@ -87,20 +87,24 @@ Programación Concurrente y Distribuida
 	}
   }
   ```
-  - Por último, para validar el tercer objetivo, se desarrolló la funcionalidad del juego de la siguiente manera:
+- Por último, para validar el tercer objetivo, se desarrolló la funcionalidad del juego de la siguiente manera:
  
-    Primero debemos validar en diferentes terminales el número de jugador ```Player n```, el puerto de cada jugador ```Enter port``` y por último el destino al cual deben ir ```Enter destiny```
+  Primero debemos validar en diferentes terminales el número de jugador ```Player n```, el puerto de cada jugador ```Enter port``` y por último el destino al cual deben ir ```Enter destiny```
     
-    ![image](https://github.com/TitoWuPan/Trabajo-Final-Concurrente-y-Distribuida-CC65/assets/103372071/929d4515-6d08-409d-ae03-07d810764a31)
+  ![image](https://github.com/TitoWuPan/Trabajo-Final-Concurrente-y-Distribuida-CC65/assets/103372071/929d4515-6d08-409d-ae03-07d810764a31)
     
-    Inicializamos el juego poniendo el punto de destino ```Enter destiny```
+  Inicializamos el juego poniendo el punto de destino ```Enter destiny```
     
-    ![image](https://github.com/TitoWuPan/Trabajo-Final-Concurrente-y-Distribuida-CC65/assets/103372071/5744647d-2763-45ca-8e4a-20b2c2fd68ad)
+  ![image](https://github.com/TitoWuPan/Trabajo-Final-Concurrente-y-Distribuida-CC65/assets/103372071/5744647d-2763-45ca-8e4a-20b2c2fd68ad)
     
-    Una vez inicializado los terminales de los jugadores nos mostrarán como fue su recorrido y cual es el ganador (en este caso el Player 2)
+  Una vez inicializado los terminales de los jugadores nos mostrarán como fue su recorrido y cual es el ganador (en este caso el Player 2)
     
-    ![image](https://github.com/TitoWuPan/Trabajo-Final-Concurrente-y-Distribuida-CC65/assets/103372071/9131a4a4-bb91-4acc-abc3-d94dbfca1d80)
+  ![image](https://github.com/TitoWuPan/Trabajo-Final-Concurrente-y-Distribuida-CC65/assets/103372071/9131a4a4-bb91-4acc-abc3-d94dbfca1d80)
 
-    Para el desarrolllo de esta solución usamos la arquitectura Hot Potato, el cual se basa en que cada jugador en la red "lanza" la tarea o los datos al siguiente jugador, de manera similar a cómo se pasaría una patata caliente en un juego. En nuestro caso hacemos que se inicie con nuestro primer jugador, el cual lanza los dados y toma su ueva posición y esta información se entrega al siguiente jugador y así siguen el ciclo hasta que llegue uno a ganar y se detenga el ciclo.
+  - Conclusiones
+	
+    - El juego funciona como una aplicación distribuida donde cada jugador se comunica con otros jugadores a través de conexiones TCP, comparte su estado y coordina sus acciones para simular un juego de laberinto concurrente. La arquitectura se basa en goroutines y conexiones TCP para permitir la ejecución paralela de múltiples instancias del juego.
+      
+    - Para el desarrolllo de esta solución usamos la arquitectura Hot Potato, el cual se basa en que cada jugador en la red "lanza" la tarea o los datos al siguiente jugador, de manera similar a cómo se pasaría una patata caliente en un juego. En nuestro caso hacemos que se inicie con nuestro primer jugador, el cual lanza los dados y toma su ueva posición y esta información se entrega al siguiente jugador y así siguen el ciclo hasta que llegue uno a ganar y se detenga el ciclo.
 
 
