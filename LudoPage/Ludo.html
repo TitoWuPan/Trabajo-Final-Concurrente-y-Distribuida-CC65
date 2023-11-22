@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laberinto</title>
+    <link rel="stylesheet" type="text/css" href="Styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <h1>Ludo Game Maze</h1>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="table-container" id="mazeContainer">
+        </div>
+    </div>
+
+    <div class="buttons-container">
+        <button id="startButton">Inicio</button>
+        <button id="resetButton">Reiniciar</button>
+    </div>
+
+    <div class="text-container">
+        <div class="title">
+            <h1>Movimientos</h1>
+        </div>
+    </div>
+
+    <script src="Script.js"></script>
+    <script>
+    window.onload = adjustTextContainerHeight;
+    window.onload = createMazeTable;
+    window.onresize = adjustTextContainerHeight;
+    </script>
+</div>
+</body>
+</html>
