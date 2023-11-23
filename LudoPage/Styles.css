@@ -34,11 +34,11 @@ table {
 td {
     width: 40px;
     height: 40px;
-    border: 2px solid black;
+    border: 2px solid white;;
 }
 
 td.empty {
-    background-color: white; 
+    background-color: white;
 }
 
 td.wall {
@@ -50,11 +50,16 @@ td.start {
 }
 
 td.trap {
-    background-color: rgb(190, 156, 0); 
+    background-color: rgb(190, 156, 0);
 }
 
 td.end {
     background-color: rgb(139, 0, 0); 
+}
+
+td.ficha {
+    background-color: red; 
+    border-radius: 50%;
 }
 
 .buttons-container {
